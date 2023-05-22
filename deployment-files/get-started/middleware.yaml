@@ -1,0 +1,32 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: oauth-auth
+  namespace: default
+spec:
+  forwardAuth:
+    address: http://oauth2-proxy.default/oauth2/auth_or_start
+    trustForwardHeader: true
+    authResponseHeaders:
+      - X-Auth-Request-Access-Token
+      - Authorization
+      - X-Auth-Request-User
+      - X-Auth-Request-Email
+      - X-Auth-Email
+      - X-Auth-Username
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: oauth-headers
+  namespace: default
+spec:
+  headers:
+    sslRedirect: true
+    stsSeconds: 315360000
+    browserXssFilter: true
+    contentTypeNosniff: true
+    forceSTSHeader: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    frameDeny: true
