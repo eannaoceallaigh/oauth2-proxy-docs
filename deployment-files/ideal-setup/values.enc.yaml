@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: oauth2-proxy-values
+    namespace: default
+type: Opaque
+stringData:
+    azure-tenant: ENC[AES256_GCM,data:ylRCnpj2keo=,iv:8TKS7fFoPiIopcX3ZToeAB5uuNTj3Dh/bSyEBWY/lYo=,tag:M8aUwo5/9aUC+KeVryPDDw==,type:str]
+    client-id: ENC[AES256_GCM,data:Rljin7GZ39s=,iv:H4td5l3qp1hM+i+HbtjxCq1pDyFhC/50BJMKZt/Bn80=,tag:kJNelfZNJLJpI85Td96b+Q==,type:str]
+    client-secret: ENC[AES256_GCM,data:XhbyfBNwK8I=,iv:u6M1xMpHrwGR7X9vKp/F7kJiepGSyTvSy3ws6b/KuOo=,tag:bqcMWJIcXXwY23X9+htqeQ==,type:str]
+    cookie-secret: ENC[AES256_GCM,data:WKVcrWi1XBs=,iv:JVbqGikBx9xr3/WlCPGSpPLNrG+PZlgBWl2uUtT7JY0=,tag:oq2wqXtgh+KXU9mTOiFXiw==,type:str]
+    extra-jwt-issuers: ENC[AES256_GCM,data:M8gRxZy50as=,iv:3CjqGNZ0Wv3A6ntKKR7pMBlRnEwPYO/oZOgVTFHuRqg=,tag:LgpmFmPEzg8KJClpwt6pRA==,type:str]
+    oidc-issuer-url: ENC[AES256_GCM,data:oSgf/6MprzI=,iv:sqvHXm+Zyp4YCZHunjiVHhZu/x9EOn2pCBNL577EYOg=,tag:U5Kkqg+zj/AeC5OshJLWlw==,type:str]
+    redis-password: ENC[AES256_GCM,data:881l1/cDcvc=,iv:pecGw5cKT/SqUQWK8p2KAoCv7JbHfFOrneeUouzG6NA=,tag:b7RwSZgqgYXkP8OgihuUdg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age19d23uya6maax0jq25x48wflnmqc74eu69c2sl243ywlq73f6fgvq63st4k
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPVEs1ODR1NU14KzRTVXpL
+            NUlIdlNqMUt6ZXZUdHBsOThodmlDbm00ZVEwClJrT3FtSE5GbDJFRk00TmVGOU8v
+            VEZqdmg0YlgreG9BT3VuaFVzaEVhUmMKLS0tIG9IRU9HTXlQS0hTWjFuRUU2MEg4
+            bU1ITjJDRFJ5aHZZdFBoRUpqSG1NeEUKv/Id4JgyjnWB6OFFr4fOZrcR/8O8gDML
+            ZtAc6gkyUC253/OaltDVaRNBO/BFj6MGA1Xq8GmEylIykT9b4B0hxw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-05-22T21:32:22Z"
+    mac: ENC[AES256_GCM,data:z7XjeiZvAGfXEXfwV1DgFIybcVEWMDjAfMqgkJ4FtAexI6TP4nXx6zdisWoOt/txG6rb6QBmf6pyya804ETc/8GEPAqHv591RY1DvCLU+F0OIVHcl48ta1UmAUmUOyOOX6QxRn4WaINRclOhBXZKVpRfcA4zGDWAk41yret78zY=,iv:R7A8I3ihr/JM3HKrL3BrqDfrtUnWTtVHQvA+7NCuU/o=,tag:/w10s1BDZekvnw9MAsIIMQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3

@@ -3,6 +3,8 @@ kind: HelmRelease
 metadata:
   name: oauth2-proxy
   namespace: default
+  annotations:
+    flux.weave.works/automated: "false"
 spec:
   releaseName: oauth2-proxy
   chart:
@@ -16,34 +18,94 @@ spec:
   interval: 5m
   values:
     extraArgs:
-      cookie-domain: ".domain.com, .domain.net"
-      email-domain: "domain.com"
+      cookie-domain: ".domain.com"
+      email-domain: "*"
       pass-authorization-header: true
       pass-basic-auth: false
       pass-host-header: true
       pass-user-headers: true
       provider: "azure"
-      redirect-url: https://oauth2-proxy-01.domain.com/oauth2/callback
+      redirect-url: https://oauth-proxy-azure.domain.com/oauth2/callback
       reverse-proxy: true
       set-authorization-header: true
       set-xauthrequest: true
       show-debug-on-error: true
+      skip-auth-route: /api
       skip-provider-button: true
-      silence-ping-logging: true
       upstream: static://202
       whitelist-domain: ".domain.com"
-      client-id: "<CLIENT-ID>"
-      client-secret: "<CLIENT-SECRET>"
-      cookie-secret: <COOKIE-SECRET>"
-      oidc-issuer-url: "https://sts.windows.net/<TENANT-ID>/"
-      extra-jwt-issuers: "https://login.microsoftonline.com/<TENANT-ID>/v2.0=<CLIENT-ID>"
-      azure-tenant: "<TENANT-ID>"
     redis:
-      enabled: false
+      enabled: true
+      auth:
+        enabled: true
+        existingSecret: oauth2-proxy-values
+        existingSecretPasswordKey: redis-password
+      master:
+        persistence:
+          enabled: true
+          existingClaim: oauth2-proxy-redis-master
+      replica:
+        persistence:
+          enabled: true
+          existingClaim: redis-data-oauth2-proxy-redis-replicas-0
+        replicaCount: 1
+    sessionStorage:
+      type: redis
+      redis:
+        existingSecret: oauth2-proxy-values
+        standalone:
+          connectionUrl: redis://oauth2-proxy-redis-master:6379
+    extraEnv:
+      - name: OAUTH2_PROXY_AZURE_TENANT
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-values
+            key: azure-tenant
+      - name: OAUTH2_PROXY_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-values
+            key: client-id
+      - name: OAUTH2_PROXY_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-values
+            key: client-secret
+      - name: OAUTH2_PROXY_COOKIE_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-values
+            key: cookie-secret
+      - name: OAUTH2_PROXY_EXTRA_JWT_ISSUERS
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-values
+            key: extra-jwt-issuers
+      - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-values
+            key: oidc-issuer-url
+      - name: OAUTH2_PROXY_REDIS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: oauth2-proxy-values
+            key: redis-password
+    extraVolumes:
+      - name: oauth2-proxy-values
+        secret:
+          secretName: oauth2-proxy-values
+    extraVolumeMounts:
+      - mountPath: "/var/oauth2"
+        name: oauth2-proxy-values
     ingress:
       annotations:
         traefik.ingress.kubernetes.io/router.tls: "true"
       className: traefik
       enabled: true
       hosts:
-        - oauth2-proxy-01.domain.com
+        - oauth-proxy-azure.domain.com
+    proxyVarsAsSecrets: true
+    valuesFrom:
+      - name: "oauth2-proxy-values"
+        kind: Secret
