@@ -1,0 +1,37 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: default
+spec:
+  values:
+    ingressRoute:
+      dashboard:
+        enabled: false
+    globalArguments:
+      - --global.sendanonymoususage=false
+    ingressClass:
+      enabled: true
+      isDefaultClass: true
+    logs:
+      general:
+        level: DEBUG
+      access:
+        enabled: true
+    ports:
+      traefik:
+        expose: true
+      web:
+        redirectTo: websecure
+    service:
+      spec: 
+        loadBalancerIP: "X.X.X.X"
+  chart:
+    spec:
+      chart: traefik
+      version: 23.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: traefik-charts
+        namespace: defaults
+  interval: 5m
